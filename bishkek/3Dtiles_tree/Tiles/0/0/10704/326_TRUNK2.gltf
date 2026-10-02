@@ -1,0 +1,149 @@
+{
+    "asset": {
+        "generator": "COLLADA2GLTF",
+        "version": "2.0"
+    },
+    "scenes": [
+        {
+            "nodes": [
+                0
+            ]
+        }
+    ],
+    "scene": 0,
+    "nodes": [
+        {
+            "children": [
+                1
+            ],
+            "matrix": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                -1.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "name": "Z_UP"
+        },
+        {
+            "mesh": 0
+        }
+    ],
+    "meshes": [
+        {
+            "primitives": [
+                {
+                    "attributes": {
+                        "NORMAL": 1,
+                        "POSITION": 2
+                    },
+                    "indices": 0,
+                    "mode": 4,
+                    "material": 0,
+                    "extensions": {
+                        "KHR_draco_mesh_compression": {
+                            "bufferView": 0,
+                            "attributes": {
+                                "POSITION": 1,
+                                "NORMAL": 0
+                            }
+                        }
+                    }
+                }
+            ],
+            "name": "geometry0"
+        }
+    ],
+    "accessors": [
+        {
+            "componentType": 5123,
+            "count": 144,
+            "max": [
+                73
+            ],
+            "min": [
+                0
+            ],
+            "type": "SCALAR"
+        },
+        {
+            "componentType": 5126,
+            "count": 74,
+            "max": [
+                0.9659284353256226,
+                0.9659284353256226,
+                1.0
+            ],
+            "min": [
+                -0.9659284353256226,
+                -0.9659284353256226,
+                -1.0
+            ],
+            "type": "VEC3"
+        },
+        {
+            "componentType": 5126,
+            "count": 74,
+            "max": [
+                0.0,
+                0.06825000047683716,
+                0.8399999737739563
+            ],
+            "min": [
+                -0.13650000095367433,
+                -0.06825000047683716,
+                0.0
+            ],
+            "type": "VEC3"
+        }
+    ],
+    "materials": [
+        {
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [
+                    0.800000011920929,
+                    0.800000011920929,
+                    0.800000011920929,
+                    1.0
+                ],
+                "metallicFactor": 0.0
+            },
+            "emissiveFactor": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "name": "default_ai_0.2_sh_0.2_tr_0.0_dc_r_0.8_g_0.8_b_0.8_sc_r_1.0_g_1.0_b_1.0_ec_r_0.0_g_0.0_b_0_eff"
+        }
+    ],
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 376
+        }
+    ],
+    "buffers": [
+        {
+            "byteLength": 376,
+            "uri": "data:application/octet-stream;base64,RFJBQ08CAgEBAAAASjABMAAAEt/3fd/3fd/btm1bb9u2bX3fB/8C7kD/AoBCAgAAAP8AAAEBCQMAAAMBAAkDAAECAAMBAQP/B8033P+n3Jfc3P8LcP////+XcHD/q3D////33NyX3P+ncBUr40eo8hccXCt9ugnkMJ5nALgrr4f/AwAA/wEAAAoBAQEBBJgfyRi9A1EC//////9/UQLlAv///////////59xAS0DLQMpAf//////fwUCBQJRAlEC//////9/BQIHvQH/////DykB3P//////h3EBUQL//////4uU//////////////////////////+/SGQYX9hqSXEhzG8e/YymHu7seMLyKFd+fTmJMX12l/+RNihgXf3S8gMpjO/8005kilPeI7BELy+TZObMKeD4eW6N8170JP/PLofTABZVLCJOU1udGi5biHgX/o7B5qm4PN/HGJ2EAAAAAP8/AACoxgu+qMaLvQAAAAA9Clc/Dg=="
+        }
+    ],
+    "extensionsRequired": [
+        "KHR_draco_mesh_compression"
+    ],
+    "extensionsUsed": [
+        "KHR_draco_mesh_compression"
+    ]
+}

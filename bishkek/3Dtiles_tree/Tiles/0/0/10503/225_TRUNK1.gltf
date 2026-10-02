@@ -1,0 +1,149 @@
+{
+    "asset": {
+        "generator": "COLLADA2GLTF",
+        "version": "2.0"
+    },
+    "scenes": [
+        {
+            "nodes": [
+                0
+            ]
+        }
+    ],
+    "scene": 0,
+    "nodes": [
+        {
+            "children": [
+                1
+            ],
+            "matrix": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                -1.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "name": "Z_UP"
+        },
+        {
+            "mesh": 0
+        }
+    ],
+    "meshes": [
+        {
+            "primitives": [
+                {
+                    "attributes": {
+                        "NORMAL": 1,
+                        "POSITION": 2
+                    },
+                    "indices": 0,
+                    "mode": 4,
+                    "material": 0,
+                    "extensions": {
+                        "KHR_draco_mesh_compression": {
+                            "bufferView": 0,
+                            "attributes": {
+                                "POSITION": 1,
+                                "NORMAL": 0
+                            }
+                        }
+                    }
+                }
+            ],
+            "name": "geometry0"
+        }
+    ],
+    "accessors": [
+        {
+            "componentType": 5123,
+            "count": 144,
+            "max": [
+                73
+            ],
+            "min": [
+                0
+            ],
+            "type": "SCALAR"
+        },
+        {
+            "componentType": 5126,
+            "count": 74,
+            "max": [
+                0.9659231901168824,
+                0.9659231901168824,
+                1.0
+            ],
+            "min": [
+                -0.9659231901168824,
+                -0.9659231901168824,
+                -1.0
+            ],
+            "type": "VEC3"
+        },
+        {
+            "componentType": 5126,
+            "count": 74,
+            "max": [
+                0.0,
+                0.05999999865889549,
+                2.000000476837158
+            ],
+            "min": [
+                -0.119999997317791,
+                -0.05999999865889549,
+                0.0
+            ],
+            "type": "VEC3"
+        }
+    ],
+    "materials": [
+        {
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [
+                    0.800000011920929,
+                    0.800000011920929,
+                    0.800000011920929,
+                    1.0
+                ],
+                "metallicFactor": 0.0
+            },
+            "emissiveFactor": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "name": "default_ai_0.2_sh_0.2_tr_0.0_dc_r_0.8_g_0.8_b_0.8_sc_r_1.0_g_1.0_b_1.0_ec_r_0.0_g_0.0_b_0_eff"
+        }
+    ],
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 329
+        }
+    ],
+    "buffers": [
+        {
+            "byteLength": 329,
+            "uri": "data:application/octet-stream;base64,RFJBQ08CAgEBAAAASjABMAAAEm/btm193/d93/d93/e9bdu2Bf8C7kD/AoBCAgAAAP8AAAEBCQMAAAMBAAkDAAECAAMBAQOUB2E33P+n3Jfc3P8LcP////+XcNz//////6fc3Je9ARX4+sbAnPy+9f9cv4yyNH5BQWJmiof/AwAA/wEAAAoBAQEBBMILZRnBAwUC//9RApkC////h50EVQT//3EBcQGZApkC//8FAge9Af9vKQEH3P//lJTccQH//0gpAf////////+nSGJM91iWfqaJ2kw1FXpJsKkdf5KjNooRNsEl4RpZa+uqDS759Ra80SiTmuWyy2JRJTfZ/pzq3vrTsQzi72EUFWIOPacy3G9+0tYpff5b9CUEKIW1hMS7YmgKQ5fwuD7Cye2/gQAAAAD/PwAAj8L1vY/Cdb0AAAAAAgAAQA4="
+        }
+    ],
+    "extensionsRequired": [
+        "KHR_draco_mesh_compression"
+    ],
+    "extensionsUsed": [
+        "KHR_draco_mesh_compression"
+    ]
+}
