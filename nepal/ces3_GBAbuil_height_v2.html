@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<script src="https://cesium.com/downloads/cesiumjs/releases/1.133/Build/Cesium/Cesium.js"></script>
+
+<link
+ href="https://cesium.com/downloads/cesiumjs/releases/1.133/Build/Cesium/Widgets/widgets.css"
+ rel="stylesheet">
+
+<style>
+html,body {
+    width:100%;
+    height:100%;
+    margin:0;
+    overflow:hidden;
+}
+
+#cesiumContainer{
+    width:100%;
+    height:100%;
+}
+
+#layerPanel{
+    position:absolute;
+    top:10px;
+    left:10px;
+    z-index:1000;
+    background:white;
+    padding:10px;
+    border-radius:5px;
+    box-shadow:0 0 10px gray;
+    font-family:sans-serif;
+}
+
+</style>
+
+</head>
+
+<body>
+<div id="layerPanel">
+    <label>
+        <input type="checkbox" id="chkGBA" checked>
+        GBA_Building
+    </label>
+    <br>
+    <label>
+        <input type="checkbox" id="chkPower" checked>
+        Hydropower
+    </label>
+    <br>
+    <label>
+        <input type="range" id="poOpacity" min="0" max="100" value="100">
+    </label>
+    <br>
+    <label>
+        <input type="checkbox" id="chkBrDamage" checked>
+        Bridge Damage
+    </label>
+    <br>
+    <label>
+        <input type="range" id="bdOpacity" min="0" max="100" value="100">
+    </label>
+    <br>
+    <label>
+        <input type="checkbox" id="chkBridge" checked>
+        Bridge
+    </label>
+    <br>
+    <label>
+        <input type="range" id="brOpacity" min="0" max="100" value="100">
+    </label>
+    <br>
+    <label>
+        <input type="checkbox" id="chkDamln" checked>
+        Damaged Line
+    </label>
+    <br>
+    <label>
+        <input type="range" id="damlnOpacity" min="0" max="100" value="100">
+    </label>
+    <br>
+    <label>
+        <input type="checkbox" id="chkFloodArea" checked>
+        Flood Area
+    </label>   
+    <br> <br>
+    <label>
+        <input type="checkbox" id="chkOSM" checked>
+        OpenStreetMap
+    </label>   
+    <br> 
+    <label>
+        <input type="range" id="osmOpacity" min="0" max="100" value="100">
+
+    </label>
+</div>    
+
+<div id="cesiumContainer"></div>
+<script>
+
+let osmLayer
+
+Cesium.Ion.defaultAccessToken =
+
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmMDhkNDVhYi1mZTk5LTRlNjYtOTVjOS02ZTA3N2ZmZTcyYTAiLCJpZCI6Mzg2ODA2LCJpYXQiOjE3NzAxODI3NTJ9.rpTAwIkSWtQBVgc_ZkQWq13Zdoj3DQja9pOx5QN1PIs";
+
+
+async function init() {
+
+    const viewer = new Cesium.Viewer(
+        'cesiumContainer',
+        {
+            terrainProvider:
+            await Cesium.createWorldTerrainAsync(),
+            baseLayerPicker:false 
+        }
+    );
+
+    viewer.scene.globe.depthTestAgainstTerrain = true;
+
+    window.viewer = viewer;
+
+ //   viewer.shadows = false;
+
+    osmLayer =
+    viewer.imageryLayers.addImageryProvider(
+        new Cesium.OpenStreetMapImageryProvider({
+            url: "https://tile.openstreetmap.org/" 
+        })
+    );
+
+    viewer.scene.frameState.creditDisplay.addStaticCredit(
+        new Cesium.Credit(
+         '© OpenStreetMap contributors'
+        )
+    );
+
+            const buildingGBA = await Cesium.GeoJsonDataSource.load(
+//                "./colla_glac_3D_ellipsoid_cut.geojson",
+                "./wt/colla_glac_wt_cut.geojson",
+                {
+                    stroke: Cesium.Color.BLUE,
+                    strokeWidth: 5,
+                    credit: new Cesium.Credit(
+                        "Building data : Global Building Atlas")
+                }
+            );
+
+            buildingGBA.entities.values.forEach(entity => {
+                   if (entity.polygon) {
+                        const h =
+                            entity.properties.height.getValue();
+                        const pos =
+                            entity.polygon.hierarchy.getValue().positions;
+                        const z =Cesium.Cartographic.fromCartesian(pos[0]).height;
+
+                        entity.polygon.perPositionHeight = true;
+                        entity.polygon.extrudedHeight = z + h;
+
+                    entity.polygon.material =
+                        Cesium.Color.fromBytes(180, 120, 120);//(180, 120, 120,220)
+
+                    entity.polygon.outline = true;
+
+                    entity.polygon.outlineColor =
+                        Cesium.Color.fromBytes(120,80,80,255);
+                    }
+                });
+
+            viewer.dataSources.add(buildingGBA);
+
+            const affected_area = await Cesium.GeoJsonDataSource.load(
+                "./data/hot_flood_npl_flood_extent_ellipsoid.geojson",
+//                "./data/hdx/hot_flood_npl_flood_extent.geojson",
+                
+               {
+                    stroke: Cesium.Color.RED,
+                    strokeWidth: 5,
+                    credit: new Cesium.Credit(
+                        "Data source: HDX")
+                }
+            );
+
+            affected_area.credit = new Cesium.Credit(
+                "source:HDX"
+            );
+
+ /*           affected_area.entities.values.forEach(entity => {
+
+                if(entity.polygon){
+                    entity.polygon.heightReference =
+                        Cesium.HeightReference.CLAMP_TO_GROUND;
+                    entity.polygon.material =
+                        Cesium.Color.YELLOW.withAlpha(0.4);
+                    entity.polygon.outline = true;
+                    entity.polygon.outlineColor =
+                        Cesium.Color.RED;
+                }
+            }); */
+
+            viewer.dataSources.add(affected_area);
+
+//  damaged line features
+
+            const damage_line =
+                await Cesium.GeoJsonDataSource.load(
+                    "./data/destroyed_line_osm_groundz.geojson"
+                );
+
+            viewer.dataSources.add(damage_line);
+
+            damage_line.entities.values.forEach(entity=>{
+
+                if(entity.polyline){
+
+                    entity.polyline.clampToGround = false;
+                    entity.polyline.material = Cesium.Color.RED;
+
+                }
+            });
+
+// bridge features from OSM
+
+            const bridge =
+                await Cesium.GeoJsonDataSource.load(
+                    "./data/hdx/hot_flood_npl_bridges_osm.geojson",
+                    {
+                        stroke : Cesium.Color.BROWN,
+                        strokeWidth : 6
+                    }
+                );
+
+            viewer.dataSources.add(bridge);
+
+            bridge.entities.values.forEach(entity => {
+
+                if(entity.polyline){
+                    entity.polyline.clampToGround = true;
+                    entity.polyline.width = 6;
+                    entity.polyline.material =
+                        Cesium.Color.BROWN;
+                }
+            });
+
+            const bridge_damage =
+                await Cesium.GeoJsonDataSource.load(
+                    "./data/hdx/hot_flood_npl_bridge_damage.geojson"
+                );
+
+            viewer.dataSources.add(bridge_damage);
+
+            bridge_damage.entities.values.forEach(entity => {
+
+                if (entity.position) {
+
+                    entity.billboard = {
+
+                        image : "./data/maki/icons/cross.svg",  // 仮
+                        color :Cesium.Color.RED,
+                        scale : 1,
+
+                        heightReference :
+                            Cesium.HeightReference.CLAMP_TO_GROUND
+
+                    };
+
+                }
+
+            });
+
+            const exposed_hydropower =
+                await Cesium.GeoJsonDataSource.load(
+                    "./data/hdx/hot_flood_npl_exposed_hydropowers.geojson"
+                );
+
+            viewer.dataSources.add(exposed_hydropower);
+
+            exposed_hydropower.entities.values.forEach(entity => {
+
+                if (entity.position) {
+
+                    entity.billboard = {
+
+                        image : "./data/maki/icons/industry.svg",  // 仮
+                        color :Cesium.Color.BLUE,
+                        scale : 2,
+
+                        heightReference :
+                            Cesium.HeightReference.CLAMP_TO_GROUND
+
+                    };
+
+                }
+
+            });
+
+            document
+            .getElementById("chkGBA")
+            .addEventListener(
+                "change",
+                function(){
+
+                    buildingGBA.show =
+                        this.checked;
+
+                }
+            );
+
+            document
+            .getElementById("chkPower")
+            .addEventListener(
+                "change",
+                function(){
+
+                    exposed_hydropower.show =
+                        this.checked;
+
+                }
+            );
+
+            document
+            .getElementById("poOpacity")
+            .addEventListener(
+                "input",
+                function(){
+                    const a=this.value /100.0;
+                exposed_hydropower.style=
+                    new Cesium.Cesium3DTileStyle({
+                        color:
+                        `color('limegreen',${a})`
+                    })
+                }
+            );
+
+            document
+            .getElementById("chkBridge")
+            .addEventListener(
+                "change",
+                function(){
+
+                    bridge.show =
+                        this.checked;
+
+                }
+            );
+
+            document
+            .getElementById("brOpacity")
+            .addEventListener(
+                "input",
+                function(){
+                    const a =
+                        this.value / 100.0;
+
+                    bridge.entities.values.forEach(
+                        entity => {
+
+                            entity.polygon.material =
+                                Cesium.Color.fromBytes(255,255,190)
+                                    .withAlpha(a);
+                        }
+                    );          
+//                    console.log("road opacity", a)         
+                }
+            );
+
+            document
+            .getElementById("chkBrDamage")
+            .addEventListener(
+                "change",
+                function(){
+
+                    bridge_damage.show =
+                        this.checked;
+
+                }
+            );
+
+            document
+            .getElementById("bdOpacity")
+            .addEventListener(
+                "input",
+                function(){
+                    const a =
+                        this.value / 100.0;
+
+                    bridge_damage.entities.values.forEach(
+                        entity => {
+
+                            entity.polygon.material =
+                                Cesium.Color.fromBytes(255,255,190)
+                                    .withAlpha(a);
+                        }
+                    );          
+//                    console.log("road opacity", a)         
+                }
+            );
+
+            document
+            .getElementById("chkDamln")
+            .addEventListener(
+                "change",
+                function(){
+
+                    damage_line.show =
+                        this.checked;
+
+                }
+            );
+
+            document
+            .getElementById("damlnOpacity")
+            .addEventListener(
+                "input",
+                function(){
+                    const a =
+                        this.value / 100.0;
+
+                    damage_line.entities.values.forEach(
+                        entity => {
+
+                            entity.polygon.material =
+                                Cesium.Color.fromBytes(255,255,190)
+                                    .withAlpha(a);
+                        }
+                    );          
+//                    console.log("road opacity", a)         
+                }
+            );
+
+            document
+            .getElementById("chkFloodArea")
+            .addEventListener(
+                "change",
+                function(){
+
+                    affected_area.show =
+                        this.checked;
+
+                }
+            );
+
+            document
+            .getElementById("chkOSM")
+            .addEventListener(
+                "change",
+                function(){
+
+                    osmLayer.show =
+                        this.checked;
+
+                }
+            );
+
+            document
+            .getElementById("osmOpacity")
+            .addEventListener(
+                "input",
+                function(){
+                    osmLayer.alpha =
+                        this.value / 100.0;
+                }
+            );     
+
+
+viewer.camera.flyTo({
+        destination: Cesium.Cartesian3.fromDegrees(85.3628,28.1977,5173.0),
+        orientation: {
+            heading: Cesium.Math.toRadians(3.8973),
+            pitch: Cesium.Math.toRadians(-11.9),
+            roll: 0.0
+        }
+
+});
+
+
+    }
+//}
+init();
+</script>
+
+</body>
+</html>
